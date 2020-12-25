@@ -1,3 +1,4 @@
+// 补充jsx的类型声明适配
 import Vue, { VNode } from "vue";
 
 declare global {
