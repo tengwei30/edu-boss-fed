@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter, { RouteConfig } from "vue-router";
 import Layout from "@/layout/index.vue";
+import store from "@/store/index";
 
 Vue.use(VueRouter);
 
@@ -15,6 +16,9 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     component: Layout,
+    meta: {
+      requiresAuth: true // 自定义对象
+    },
     children: [
       {
         path: "", // 默认子路由
@@ -74,7 +78,10 @@ const routes: Array<RouteConfig> = [
     path: "*",
     name: "404",
     component: () =>
-      import(/* webpackChunkName: "404" */ "@/views/error-page/404.vue")
+      import(/* webpackChunkName: "404" */ "@/views/error-page/404.vue"),
+    meta: {
+      requiresAuth: true // 自定义对象
+    }
   }
 ];
 
@@ -82,4 +89,27 @@ const router = new VueRouter({
   routes
 });
 
+/**
+ *全局前置守卫，任何页面的访问都要走这
+ *to 去哪
+ *from 从哪来
+ *next 通行标志
+ */
+router.beforeEach((to, from, next) => {
+  // to.matched 是匹配到的路由记录，是一个数组
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    if (!store.state.user) {
+      next({
+        name: "login",
+        query: {
+          redirect: to.fullPath // 把登录成功需要返回的页面告诉登录页面
+        }
+      });
+    } else {
+      next(); // 允许通过
+    }
+  } else {
+    next(); // 确保一定要调用 next()
+  }
+});
 export default router;
