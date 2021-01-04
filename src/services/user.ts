@@ -23,7 +23,8 @@ export const login = (data: User) => {
  */
 export const getUserInfo = () => {
   return request({
-    method: "POST",
-    url: "/front/user/getInfo"
+    method: "GET",
+    url: "/front/user/getInfo",
+    headers: { "content-type": "application/x-www-form-urlencoded" }
   });
 };
