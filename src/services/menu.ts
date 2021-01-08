@@ -53,3 +53,29 @@ export const delMenu = (id: number) => {
     headers: { "content-type": "application/x-www-form-urlencoded" }
   });
 };
+
+export const getMenuNodeList = () => {
+  return request({
+    method: "GET",
+    url: "/boss/menu/getMenuNodeList"
+  });
+};
+
+export const allocateRoleMenus = (data: any) => {
+  return request({
+    method: "POST",
+    url: "/boss/menu/allocateRoleMenus",
+    data
+  });
+};
+
+export const getRoleMenus = (roleId: string | number) => {
+  return request({
+    method: "GET",
+    url: "/boss/menu/getRoleMenus",
+    params: {
+      // axios 会把 params 转换为 key=value&key=value 的数据格式放到 url 后面(以?分割)
+      roleId
+    }
+  });
+};
